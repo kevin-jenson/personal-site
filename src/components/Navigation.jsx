@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles, useTheme } from "@material-ui/styles";
 import { Link } from "gatsby";
+import * as Icons from "./Icons";
 
 const useHeaderLinkStyles = makeStyles(({ transitions, ...theme }) => ({
   link: {
@@ -13,9 +14,9 @@ const useHeaderLinkStyles = makeStyles(({ transitions, ...theme }) => ({
     textDecoration: "none",
     color: theme.colors.white,
     transition: transitions.create("opacity", {
-      duration: transitions.duration.standard,
+      duration: transitions.duration.complex + transitions.duration.shortest,
       easing: transitions.easing.standard,
-      delay: transitions.duration.shortest,
+      delay: transitions.duration.shorter,
     }),
     "&:hover": {
       textDecoration: "underline",
@@ -27,7 +28,7 @@ const HeaderLink = ({ title }) => {
   const classes = useHeaderLinkStyles();
 
   return (
-    <Link to={`/${title}`} className={classes.link}>
+    <Link to={`/${title !== "about" ? title : ""}`} className={classes.link}>
       {title}
     </Link>
   );
@@ -76,7 +77,7 @@ const useHeaderStyles = makeStyles(({ transitions, ...theme }) => ({
     display: "flex",
     transform: "translate(450px, 0px)",
     transition: transitions.create("transform", {
-      duration: transitions.duration.standard,
+      duration: transitions.duration.enteringScreen,
       easing: transitions.easing.standard,
     }),
   },
@@ -153,5 +154,53 @@ export const DesktopHeader = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const useFooterStyles = makeStyles(theme => ({
+  footer: {
+    display: "flex",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+  },
+  iconContainer: {
+    width: theme.spacer * 35.5,
+    height: theme.spacer * 8.5,
+    backgroundColor: theme.colors.gray,
+    display: "flex",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+}));
+
+export const Footer = () => {
+  const classes = useFooterStyles();
+  const socialLinks = [
+    "https://twitter.com/kevinjenson_",
+    "https://www.linkedin.com/in/kevin-jenson/",
+    "https://github.com/kevin-jenson",
+  ];
+
+  return (
+    <footer className={classes.footer}>
+      <div className={classes.iconContainer}>
+        {Object.keys(Icons).map((icon, index) => {
+          const Icon = Icons[icon];
+
+          return (
+            <a
+              key={icon}
+              aria-label={icon}
+              href={socialLinks[index]}
+              target="_blank"
+            >
+              <Icon />
+            </a>
+          );
+        })}
+      </div>
+    </footer>
   );
 };
