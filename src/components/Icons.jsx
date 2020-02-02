@@ -1,5 +1,5 @@
 import React from "react";
-import { useTheme } from "@material-ui/styles";
+import { useTheme, makeStyles } from "@material-ui/styles";
 
 export const Twitter = () => {
   const theme = useTheme();
@@ -39,3 +39,18 @@ export const GitHub = () => {
     </svg>
   );
 };
+
+const useCursorStyles = makeStyles(theme => ({
+  cursor: {
+    backgroundColor: theme.colors.white,
+    width: theme.spacer / 8,
+    height: theme.spacer * 4,
+    position: "absolute",
+  },
+}));
+
+export const Cursor = React.forwardRef((props, ref) => {
+  const classes = useCursorStyles();
+
+  return <span ref={ref} className={classes.cursor} {...props} />;
+});
