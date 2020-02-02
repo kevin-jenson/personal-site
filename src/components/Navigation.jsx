@@ -1,7 +1,8 @@
 import React from "react";
 import { makeStyles, useTheme } from "@material-ui/styles";
 import { Link } from "gatsby";
-import * as Icons from "./Icons";
+import * as AllIcons from "./Icons";
+const { Cursor, ...Icons } = AllIcons;
 
 const useHeaderLinkStyles = makeStyles(({ transitions, ...theme }) => ({
   link: {
