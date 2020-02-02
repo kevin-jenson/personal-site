@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 
 import Layout from "../components/Layout";
 import SEO from "../components/Seo";
-import Canvas from "../components/Canvas";
+import { Cursor } from "../components/Icons";
 
 const useStyles = makeStyles(theme => ({
   homeText: {
@@ -13,24 +13,35 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
-    width: theme.spacer * 65,
+    width: theme.spacer * 81.75,
     height: theme.spacer * 35,
     margin: [[0, "auto"]],
     position: "absolute",
     top: `calc(50% - ${(theme.spacer * 35) / 2}px)`,
-    left: `calc(50% - ${(theme.spacer * 65) / 2}px)`,
+    left: `calc(50% - ${(theme.spacer * 81.75) / 2}px)`,
   },
   centerText: {
     textAlign: "center",
+    margin: 0,
+  },
+  "@keyframes cursorBlink": {
+    "0%": { opacity: 0 },
+    "50%": { opacity: 1 },
+    "100%": { opacity: 0 },
+  },
+  cursor: {
+    animationName: "$cursorBlink",
+    animationIterationCount: "infinite",
+    animationDuration: "1s",
   },
 }));
 
 const IndexPage = () => {
   const homeText = React.useRef(null);
   React.useEffect(() => {
-    const [h1, h2] = homeText.current.childNodes;
-    h1.childNodes.forEach(child => (child.style.opacity = 1));
-    h2.childNodes.forEach(child => (child.style.opacity = 1));
+    homeText.current.childNodes.forEach(child => {
+      child.childNodes.forEach(child => (child.style.opacity = 1));
+    });
   });
 
   const { transitions } = useTheme();
@@ -40,50 +51,77 @@ const IndexPage = () => {
     transition: transitions.create("opacity", {
       duration: 50,
       easing: transitions.easing.standard,
-      delay: index * 25,
+      delay: index * 30,
     }),
     opacity: 0,
   });
 
   const h1 = "Hey, My Name is Kevin Jenson.";
-  const body = `I'm a full stack software engineer and a UI/UX specialist currently at CHG Healthcare.
-  Check out my blog posts or follow me on social media.
-  Also feel free to shoot me a message @ kjjenson@gmail.com.`;
+  const line1 = `I'm a full stack software engineer and a UI/UX specialist`;
+  const line2 = `currently at CHG Healthcare.`;
+  const line3 = `Check out my blog posts or follow me on social media.`;
+  const line4 = `Also feel free to shoot me a message @`;
+  const email = `kjjenson@gmail.com.`;
+
+  const lines = [h1, line1, line2, line3, line4, email];
+
+  const splitMap = (text, addition, variant = "h5") => {
+    return text.split("").map((char, index) => {
+      return (
+        <Typography
+          key={index}
+          variant={variant}
+          component="span"
+          style={createTypeTransition(index + addition)}
+        >
+          {char}
+        </Typography>
+      );
+    });
+  };
+
+  const cursorRef = React.useRef(null);
+  const handleCursorPosition = ({ target }) => {
+    const { top, right } = target.getBoundingClientRect();
+    cursorRef.current.style.top = `${top - 6}px`;
+    cursorRef.current.style.left = `${right + 10}px`;
+    if (
+      target.textContent === "." &&
+      target.previousElementSibling.textContent === "m"
+    ) {
+      cursorRef.current.classList.add(classes.cursor);
+    }
+  };
 
   return (
     <Layout>
       <SEO title="Home" />
-      <div ref={homeText} className={classes.homeText}>
-        <h1 aria-label={h1} className={classes.centerText}>
-          {h1.split("").map((char, index) => {
+      <div
+        ref={homeText}
+        className={classes.homeText}
+        onTransitionEnd={handleCursorPosition}
+      >
+        {lines.map((line, index) => {
+          if (index === 0) {
             return (
-              <Typography
-                key={index}
-                variant="h1"
-                component="span"
-                style={createTypeTransition(index)}
-              >
-                {char}
-              </Typography>
+              <h1 aria-label={line} className={classes.centerText} key={index}>
+                {splitMap(line, 0, "h1")}
+              </h1>
             );
-          })}
-        </h1>
-        <h2 aria-label={body} className={classes.centerText}>
-          {body.split("").map((char, index) => {
+          } else {
+            const additional = lines
+              .slice(0, index)
+              .reduce((total, current) => total + current.length, 0);
+
             return (
-              <Typography
-                key={index}
-                variant="h5"
-                component="span"
-                style={createTypeTransition(index + h1.length)}
-              >
-                {char}
-              </Typography>
+              <p aria-label={line} className={classes.centerText} key={index}>
+                {splitMap(line, additional)}
+              </p>
             );
-          })}
-        </h2>
+          }
+        })}
       </div>
-      <Canvas homeText={homeText} />
+      <Cursor ref={cursorRef} />
     </Layout>
   );
 };
