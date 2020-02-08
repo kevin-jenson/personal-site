@@ -3,10 +3,9 @@ import Layout from "../components/Layout";
 import SEO from "../components/Seo";
 
 import { makeStyles } from "@material-ui/styles";
-import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 
+import { TextField, Button } from "../components/Controls";
 import { Mail, Pencil, Profile } from "../components/Icons";
 
 const useStyles = makeStyles(theme => ({
@@ -15,26 +14,6 @@ const useStyles = makeStyles(theme => ({
     width: theme.spacer * 61 + "px",
     margin: "auto",
     marginTop: theme.spacer * 10 + "px",
-  },
-  underlineOverride: {
-    "&:before": {
-      borderBottom: [[1, "solid", theme.colors.white]],
-    },
-    "&:hover:before": {
-      borderBottom: [[2, "solid", theme.colors.gray], "!important"],
-    },
-    "&:after": {
-      borderBottom: [[2, "solid", theme.colors.pink]],
-    },
-  },
-  labelOverride: {
-    color: theme.colors.white,
-    "&.Mui-focused": {
-      color: theme.colors.pink,
-    },
-  },
-  inputTextColor: {
-    color: theme.colors.white,
   },
   buttonContainer: {
     marginTop: theme.spacer * 4,
@@ -70,13 +49,7 @@ const Contact = () => {
             <Icon />
           </Grid>
           <Grid item xs={11}>
-            <TextField
-              label={label}
-              fullWidth
-              InputProps={{ classes: { underline: classes.underlineOverride } }}
-              InputLabelProps={{ classes: { root: classes.labelOverride } }}
-              inputProps={{ className: classes.inputTextColor }}
-            />
+            <TextField label={label} />
           </Grid>
         </Grid>
         <Grid
@@ -86,10 +59,10 @@ const Contact = () => {
           className={classes.buttonContainer}
         >
           <Grid item xs={2}>
-            <Button variant="contained">Next</Button>
+            <Button>Next</Button>
           </Grid>
           <Grid item xs={2}>
-            <Button variant="contained">Submit</Button>
+            <Button>Submit</Button>
           </Grid>
         </Grid>
       </div>
