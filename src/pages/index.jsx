@@ -59,7 +59,7 @@ const IndexPage = () => {
   const h1 = "Hey, My Name is Kevin Jenson.";
   const line1 = `I'm a full stack software engineer and a UI/UX specialist`;
   const line2 = `currently at CHG Healthcare.`;
-  const line3 = `Check out my blog posts or follow me on social media.`;
+  const line3 = `Check out my blog posts or follow me on twitter.`;
   const line4 = `Also feel free to shoot me a message @`;
   const email = `kjjenson@gmail.com.`;
 
@@ -82,13 +82,15 @@ const IndexPage = () => {
 
   const cursorRef = React.useRef(null);
   const handleCursorPosition = ({ target }) => {
+    const isLast =
+      target.textContent === "." &&
+      target.previousElementSibling.textContent === "m";
+
     const { top, right } = target.getBoundingClientRect();
     cursorRef.current.style.top = `${top - 6}px`;
-    cursorRef.current.style.left = `${right + 10}px`;
-    if (
-      target.textContent === "." &&
-      target.previousElementSibling.textContent === "m"
-    ) {
+    cursorRef.current.style.left = `${right + (isLast ? 5 : 15)}px`;
+
+    if (isLast) {
       cursorRef.current.classList.add(classes.cursor);
     }
   };
