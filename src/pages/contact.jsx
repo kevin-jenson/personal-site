@@ -4,6 +4,10 @@ import SEO from "../components/Seo";
 
 import { makeStyles } from "@material-ui/styles";
 import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+
+import { Mail, Pencil, Profile } from "../components/Icons";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -32,10 +36,23 @@ const useStyles = makeStyles(theme => ({
   inputTextColor: {
     color: theme.colors.white,
   },
+  buttonContainer: {
+    marginTop: theme.spacer * 4,
+  },
 }));
 
 const Contact = () => {
   const classes = useStyles();
+  const [{ label, Icon }, setCurrentInputProps] = React.useState({
+    label: "What's your name?",
+    Icon: Profile,
+  });
+
+  const [formState, setFormState] = React.useState({
+    name: "",
+    email: "",
+    message: "",
+  });
 
   return (
     <Layout>
@@ -48,13 +65,33 @@ const Contact = () => {
           whats up!
         </p>
         <p>Fill out the form below or email me at kjjenson@gmail.com.</p>
-        <TextField
-          label="Name"
-          fullWidth
-          InputProps={{ classes: { underline: classes.underlineOverride } }}
-          InputLabelProps={{ classes: { root: classes.labelOverride } }}
-          inputProps={{ className: classes.inputTextColor }}
-        />
+        <Grid container spacing={0} alignItems="flex-end">
+          <Grid item xs={1}>
+            <Icon />
+          </Grid>
+          <Grid item xs={11}>
+            <TextField
+              label={label}
+              fullWidth
+              InputProps={{ classes: { underline: classes.underlineOverride } }}
+              InputLabelProps={{ classes: { root: classes.labelOverride } }}
+              inputProps={{ className: classes.inputTextColor }}
+            />
+          </Grid>
+        </Grid>
+        <Grid
+          container
+          spacing={1}
+          justify="flex-start"
+          className={classes.buttonContainer}
+        >
+          <Grid item xs={2}>
+            <Button variant="contained">Next</Button>
+          </Grid>
+          <Grid item xs={2}>
+            <Button variant="contained">Submit</Button>
+          </Grid>
+        </Grid>
       </div>
     </Layout>
   );
