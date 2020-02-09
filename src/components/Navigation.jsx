@@ -1,8 +1,8 @@
 import React from "react";
 import { makeStyles, useTheme } from "@material-ui/styles";
 import { Link } from "gatsby";
-import * as AllIcons from "./Icons";
-const { Cursor, ...Icons } = AllIcons;
+import { Twitter, LinkedIn, GitHub } from "./Icons";
+const Icons = { Twitter, LinkedIn, GitHub };
 
 const useHeaderLinkStyles = makeStyles(({ transitions, ...theme }) => ({
   link: {
