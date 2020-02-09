@@ -27,7 +27,7 @@ const useTextFieldStyles = makeStyles(theme => ({
   },
 }));
 
-export const TextField = ({ label }) => {
+export const TextField = ({ label, onInput, value }) => {
   const classes = useTextFieldStyles();
 
   return (
@@ -37,10 +37,39 @@ export const TextField = ({ label }) => {
       InputProps={{ classes: { underline: classes.underlineOverride } }}
       InputLabelProps={{ classes: { root: classes.labelOverride } }}
       inputProps={{ className: classes.inputTextColor }}
+      onInput={onInput}
+      value={value}
     />
   );
 };
 
-export const Button = ({ children }) => {
-  return <MuiButton variant="contained">{children}</MuiButton>;
+const useButtonStyles = makeStyles(theme => ({
+  rootOverride: {
+    color: theme.colors.white,
+    backgroundColor: theme.colors.gray,
+    "&:hover": {
+      backgroundColor: theme.colors.pink,
+      color: theme.colors.gray,
+    },
+  },
+  disabledOverride: {
+    backgroundColor: [theme.colors.lightPink, "!important"],
+  },
+}));
+
+export const Button = ({ children, ...props }) => {
+  const classes = useButtonStyles({ background: "pink" });
+
+  return (
+    <MuiButton
+      variant="contained"
+      {...props}
+      classes={{
+        root: classes.rootOverride,
+        disabled: classes.disabledOverride,
+      }}
+    >
+      {children}
+    </MuiButton>
+  );
 };
