@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
-import { TextField, Button } from "../components/Controls";
+import { TextField, Button, FormData } from "../components/Controls";
 import { Mail, Pencil, Profile } from "../components/Icons";
 
 const useStyles = makeStyles(theme => ({
@@ -37,6 +37,12 @@ const Contact = () => {
     email: "",
     message: "",
   });
+
+  const [formData, setFormData] = React.useState([]);
+
+  const handleFocus = () => {
+    setFormData([...formData, { Icon, text: label }]);
+  };
 
   const handleOnInput = ({ target }) => {
     setFormState({ ...formState, [value]: target.value });
@@ -95,6 +101,9 @@ const Contact = () => {
           whats up!
         </Typography>
         <p>Fill out the form below or email me at kjjenson@gmail.com.</p>
+        {formData.reduce((total, { Icon, text }) => {
+          return [...total, <FormData key={text} Icon={Icon} text={text} />];
+        }, [])}
         <form
           className={classes.form}
           onSubmit={allFormStateFilled ? handleSend : handleNext}
@@ -108,6 +117,7 @@ const Contact = () => {
                 label={label}
                 onInput={handleOnInput}
                 value={formState[value]}
+                onFocus={handleFocus}
               />
             </Grid>
           </Grid>
