@@ -27,8 +27,21 @@ const useTextFieldStyles = makeStyles(theme => ({
   },
 }));
 
-export const TextField = ({ label, onInput, value }) => {
+export const TextField = ({ label, onInput, value, onFocus }) => {
   const classes = useTextFieldStyles();
+
+  const [error, setError] = React.useState(false);
+
+  const handleBlur = () => {
+    if (value) return;
+    setError(true);
+  };
+
+  const handleFocus = () => {
+    console.log("onFocus:", onFocus);
+    onFocus();
+    setError(false);
+  };
 
   return (
     <MuiTextField
@@ -39,6 +52,9 @@ export const TextField = ({ label, onInput, value }) => {
       inputProps={{ className: classes.inputTextColor }}
       onInput={onInput}
       value={value}
+      error={error}
+      onBlur={handleBlur}
+      onFocus={handleFocus}
     />
   );
 };
@@ -71,5 +87,14 @@ export const Button = ({ children, ...props }) => {
     >
       {children}
     </MuiButton>
+  );
+};
+
+export const FormData = ({ Icon, text }) => {
+  return (
+    <React.Fragment>
+      <Icon />
+      {text}
+    </React.Fragment>
   );
 };
