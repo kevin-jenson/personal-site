@@ -27,37 +27,38 @@ const useTextFieldStyles = makeStyles(theme => ({
   },
 }));
 
-export const TextField = ({ label, onInput, value, onFocus }) => {
-  const classes = useTextFieldStyles();
+export const TextField = React.forwardRef(
+  ({ label, onInput, value, onFocus }, ref) => {
+    const classes = useTextFieldStyles();
 
-  const [error, setError] = React.useState(false);
+    const [error, setError] = React.useState(false);
 
-  const handleBlur = () => {
-    if (value) return;
-    setError(true);
-  };
+    const handleBlur = () => {
+      if (value) return;
+      setError(true);
+    };
 
-  const handleFocus = () => {
-    console.log("onFocus:", onFocus);
-    onFocus();
-    setError(false);
-  };
+    const handleFocus = () => {
+      onFocus();
+      setError(false);
+    };
 
-  return (
-    <MuiTextField
-      label={label}
-      fullWidth
-      InputProps={{ classes: { underline: classes.underlineOverride } }}
-      InputLabelProps={{ classes: { root: classes.labelOverride } }}
-      inputProps={{ className: classes.inputTextColor }}
-      onInput={onInput}
-      value={value}
-      error={error}
-      onBlur={handleBlur}
-      onFocus={handleFocus}
-    />
-  );
-};
+    return (
+      <MuiTextField
+        label={label}
+        fullWidth
+        InputProps={{ classes: { underline: classes.underlineOverride } }}
+        InputLabelProps={{ classes: { root: classes.labelOverride } }}
+        inputProps={{ className: classes.inputTextColor, ref }}
+        onInput={onInput}
+        value={value}
+        error={error}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+      />
+    );
+  }
+);
 
 const useButtonStyles = makeStyles(theme => ({
   rootOverride: {
@@ -74,7 +75,7 @@ const useButtonStyles = makeStyles(theme => ({
 }));
 
 export const Button = ({ children, ...props }) => {
-  const classes = useButtonStyles({ background: "pink" });
+  const classes = useButtonStyles();
 
   return (
     <MuiButton
@@ -90,11 +91,23 @@ export const Button = ({ children, ...props }) => {
   );
 };
 
+const useFormDataStyles = makeStyles(theme => ({
+  container: {
+    marginRight: theme.spacer * 2,
+    display: "flex",
+    "&>svg": {
+      marginRight: theme.spacer,
+    },
+  },
+}));
+
 export const FormData = ({ Icon, text }) => {
+  const classes = useFormDataStyles();
+
   return (
-    <React.Fragment>
-      <Icon />
+    <span className={classes.container}>
+      <Icon size={20} />
       {text}
-    </React.Fragment>
+    </span>
   );
 };
