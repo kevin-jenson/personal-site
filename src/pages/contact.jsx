@@ -19,13 +19,17 @@ const useStyles = makeStyles(theme => ({
   buttonContainer: {
     marginTop: theme.spacer * 4,
   },
-  form: {
-    marginTop: theme.spacer * 8,
+  formData: {
+    height: theme.spacer * 8,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
 }));
 
 const Contact = () => {
   const classes = useStyles();
+  const textFieldRef = React.useRef();
   const [{ label, Icon, value }, setCurrentInputProps] = React.useState({
     label: "What's your name?",
     Icon: Profile,
@@ -41,6 +45,7 @@ const Contact = () => {
   const [formData, setFormData] = React.useState([]);
 
   const handleFocus = () => {
+    if (formData.find(({ text }) => text === label)) return;
     setFormData([...formData, { Icon, text: label }]);
   };
 
@@ -53,6 +58,9 @@ const Contact = () => {
 
     switch (value) {
       case "name":
+        setFormData(
+          Object.assign([], formData, { 0: { Icon, text: formState.name } })
+        );
         setCurrentInputProps({
           label: "What's your email?",
           Icon: Mail,
@@ -60,6 +68,10 @@ const Contact = () => {
         });
         break;
       case "email":
+        console.log("formData:", formData);
+        setFormData(
+          Object.assign([], formData, { 1: Icon, text: formState.email })
+        );
         setCurrentInputProps({
           label: "Write me a message.",
           Icon: Pencil,
@@ -71,6 +83,8 @@ const Contact = () => {
       default:
         throw new Error(`case not found: ${value}`);
     }
+
+    textFieldRef.current.focus();
   };
 
   const handleSend = event => {
@@ -101,13 +115,12 @@ const Contact = () => {
           whats up!
         </Typography>
         <p>Fill out the form below or email me at kjjenson@gmail.com.</p>
-        {formData.reduce((total, { Icon, text }) => {
-          return [...total, <FormData key={text} Icon={Icon} text={text} />];
-        }, [])}
-        <form
-          className={classes.form}
-          onSubmit={allFormStateFilled ? handleSend : handleNext}
-        >
+        <div className={classes.formData}>
+          {formData.reduce((total, { Icon, text }) => {
+            return [...total, <FormData key={text} Icon={Icon} text={text} />];
+          }, [])}
+        </div>
+        <form onSubmit={allFormStateFilled ? handleSend : handleNext}>
           <Grid container spacing={0} alignItems="flex-end">
             <Grid item xs={1}>
               <Icon />
@@ -118,6 +131,7 @@ const Contact = () => {
                 onInput={handleOnInput}
                 value={formState[value]}
                 onFocus={handleFocus}
+                ref={textFieldRef}
               />
             </Grid>
           </Grid>
