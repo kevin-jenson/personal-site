@@ -1,10 +1,11 @@
 import React from "react";
-import { makeStyles, useTheme } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 import Typography from "@material-ui/core/Typography";
 
 import Layout from "../components/Layout";
 import SEO from "../components/Seo";
 import { Cursor } from "../components/Icons";
+import useTypeTransition from "../custom-hooks/useTypeTransition";
 
 const useStyles = makeStyles(theme => ({
   homeText: {
@@ -44,17 +45,7 @@ const IndexPage = () => {
     });
   });
 
-  const { transitions } = useTheme();
   const classes = useStyles();
-
-  const createTypeTransition = index => ({
-    transition: transitions.create("opacity", {
-      duration: 50,
-      easing: transitions.easing.standard,
-      delay: index * 30,
-    }),
-    opacity: 0,
-  });
 
   const h1 = "Hey, My Name is Kevin Jenson.";
   const line1 = `I'm a full stack software engineer and a UI/UX specialist`;
@@ -65,6 +56,8 @@ const IndexPage = () => {
 
   const lines = [h1, line1, line2, line3, line4, email];
 
+  const typeTransition = useTypeTransition();
+
   const splitMap = (text, addition, variant = "h5") => {
     return text.split("").map((char, index) => {
       return (
@@ -72,7 +65,7 @@ const IndexPage = () => {
           key={index}
           variant={variant}
           component="span"
-          style={createTypeTransition(index + addition)}
+          style={typeTransition(index + addition)}
         >
           {char}
         </Typography>

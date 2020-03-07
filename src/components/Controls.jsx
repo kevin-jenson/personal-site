@@ -2,7 +2,9 @@ import React from "react";
 
 import MuiTextField from "@material-ui/core/TextField";
 import MuiButton from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
+import useTypeTransition from "../custom-hooks/useTypeTransition";
 
 const useTextFieldStyles = makeStyles(theme => ({
   underlineOverride: {
@@ -101,13 +103,37 @@ const useFormDataStyles = makeStyles(theme => ({
   },
 }));
 
-export const FormData = ({ Icon, text }) => {
+export const FormData = ({ Icon, text, onTransitionEnd }) => {
+  const textRef = React.useRef(null);
+  React.useEffect(() => {
+    const [_, ...text] = [...textRef.current.children];
+    text.forEach(char => {
+      console.log("char.style.opacity:", char.style.opacity, char.textContent);
+      char.style.opacity = 1;
+    });
+  });
+
   const classes = useFormDataStyles();
+  const typeTransition = useTypeTransition();
 
   return (
-    <span className={classes.container}>
+    <span
+      className={classes.container}
+      ref={textRef}
+      onTransitionEnd={onTransitionEnd}
+    >
       <Icon size={20} />
-      {text}
+      <React.Fragment>
+        {text.split("").map((char, index) => (
+          <Typography
+            key={char + index}
+            component="span"
+            style={typeTransition(index)}
+          >
+            {char}
+          </Typography>
+        ))}
+      </React.Fragment>
     </span>
   );
 };

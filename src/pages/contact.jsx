@@ -59,7 +59,9 @@ const Contact = () => {
     switch (value) {
       case "name":
         setFormData(
-          Object.assign([], formData, { 0: { Icon, text: formState.name } })
+          Object.assign([], formData, {
+            0: { Icon, text: formState.name },
+          })
         );
         setCurrentInputProps({
           label: "What's your email?",
@@ -68,9 +70,8 @@ const Contact = () => {
         });
         break;
       case "email":
-        console.log("formData:", formData);
         setFormData(
-          Object.assign([], formData, { 1: Icon, text: formState.email })
+          Object.assign([], formData, { 1: { Icon, text: formState.email } })
         );
         setCurrentInputProps({
           label: "Write me a message.",
@@ -85,6 +86,10 @@ const Contact = () => {
     }
 
     textFieldRef.current.focus();
+  };
+
+  const handleTransitionEnd = event => {
+    console.log("FINISHED!!");
   };
 
   const handleSend = event => {
@@ -116,9 +121,16 @@ const Contact = () => {
         </Typography>
         <p>Fill out the form below or email me at kjjenson@gmail.com.</p>
         <div className={classes.formData}>
-          {formData.reduce((total, { Icon, text }) => {
-            return [...total, <FormData key={text} Icon={Icon} text={text} />];
-          }, [])}
+          {formData.map(({ Icon, text }) => {
+            return (
+              <FormData
+                key={text}
+                Icon={Icon}
+                text={text}
+                onTransitionEnd={handleTransitionEnd}
+              />
+            );
+          })}
         </div>
         <form onSubmit={allFormStateFilled ? handleSend : handleNext}>
           <Grid container spacing={0} alignItems="flex-end">
