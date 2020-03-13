@@ -1,11 +1,11 @@
 import { useTheme } from "@material-ui/styles";
 
-const useTypeTransition = () => {
+const useTypeTransition = (duration = 50) => {
   const { transitions } = useTheme();
 
   return index => ({
     transition: transitions.create("opacity", {
-      duration: 50,
+      duration,
       easing: transitions.easing.standard,
       delay: index * 30,
     }),

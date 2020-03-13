@@ -42,11 +42,28 @@ const Contact = () => {
     message: "",
   });
 
-  const [formData, setFormData] = React.useState([]);
+  const [formData, setFormData] = React.useReducer((state, action) => {
+    switch (action.type) {
+      case "ADD_FORM_DATA":
+        if (state.find(({ text }) => text === label)) return state;
+        return [...state, { Icon, text: label }];
+      case "UPDATE_NAME":
+        return Object.assign([], state, {
+          0: { Icon: state[0].Icon, text: formState.name },
+        });
+      case "UPDATE_EMAIL":
+        return Object.assign([], state, {
+          1: { Icon: state[1].Icon, text: formState.email },
+        });
+      default:
+        throw new Error(
+          `type: ${action.type} not found for setFormData reducer`
+        );
+    }
+  }, []);
 
   const handleFocus = () => {
-    if (formData.find(({ text }) => text === label)) return;
-    setFormData([...formData, { Icon, text: label }]);
+    setFormData({ type: "ADD_FORM_DATA" });
   };
 
   const handleOnInput = ({ target }) => {
@@ -58,11 +75,7 @@ const Contact = () => {
 
     switch (value) {
       case "name":
-        setFormData(
-          Object.assign([], formData, {
-            0: { Icon, text: formState.name },
-          })
-        );
+        setFormData({ type: "UPDATE_NAME" });
         setCurrentInputProps({
           label: "What's your email?",
           Icon: Mail,
@@ -70,9 +83,7 @@ const Contact = () => {
         });
         break;
       case "email":
-        setFormData(
-          Object.assign([], formData, { 1: { Icon, text: formState.email } })
-        );
+        setFormData({ type: "UPDATE_EMAIL" });
         setCurrentInputProps({
           label: "Write me a message.",
           Icon: Pencil,
@@ -86,10 +97,6 @@ const Contact = () => {
     }
 
     textFieldRef.current.focus();
-  };
-
-  const handleTransitionEnd = event => {
-    console.log("FINISHED!!");
   };
 
   const handleSend = event => {
@@ -127,7 +134,7 @@ const Contact = () => {
                 key={text}
                 Icon={Icon}
                 text={text}
-                onTransitionEnd={handleTransitionEnd}
+                addNextData={() => setFormData({ type: "ADD_FORM_DATA" })}
               />
             );
           })}

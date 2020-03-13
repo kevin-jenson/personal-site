@@ -4,7 +4,6 @@ import MuiTextField from "@material-ui/core/TextField";
 import MuiButton from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/styles";
-import useTypeTransition from "../custom-hooks/useTypeTransition";
 
 const useTextFieldStyles = makeStyles(theme => ({
   underlineOverride: {
@@ -98,39 +97,48 @@ const useFormDataStyles = makeStyles(theme => ({
     marginRight: theme.spacer * 2,
     display: "flex",
     "&>svg": {
-      marginRight: theme.spacer,
+      margin: [[0, theme.spacer, theme.spacer / 2, 0]],
+      display: "inline-flex",
+      alignSelf: "center",
     },
   },
 }));
 
-export const FormData = ({ Icon, text, onTransitionEnd }) => {
+export const FormData = ({ Icon, text, addNextData }) => {
   const textRef = React.useRef(null);
   React.useEffect(() => {
-    const [_, ...text] = [...textRef.current.children];
-    text.forEach(char => {
-      console.log("char.style.opacity:", char.style.opacity, char.textContent);
-      char.style.opacity = 1;
-    });
-  });
+    const [_, ...transitionText] = [...textRef.current.children];
+    for (let i = 0; i < transitionText.length; i++) {
+      setTimeout(() => {
+        transitionText[i].style.display = "inline-block";
+        if (i === transitionText.length - 1) {
+          setTimeout(addNextData, 350);
+        }
+      }, i * 50 + 50);
+    }
+
+    return () => {
+      for (let i = transitionText.length - 1; i >= 0; i--) {
+        setTimeout(() => {
+          transitionText[i].style.display = "none";
+        }, i * 50 + 50);
+      }
+    };
+  }, [text, textRef.current]);
 
   const classes = useFormDataStyles();
-  const typeTransition = useTypeTransition();
 
   return (
-    <span
-      className={classes.container}
-      ref={textRef}
-      onTransitionEnd={onTransitionEnd}
-    >
+    <span className={classes.container} ref={textRef}>
       <Icon size={20} />
       <React.Fragment>
         {text.split("").map((char, index) => (
           <Typography
             key={char + index}
             component="span"
-            style={typeTransition(index)}
+            style={{ display: "none" }}
           >
-            {char}
+            {char === " " ? <span>&nbsp;</span> : char}
           </Typography>
         ))}
       </React.Fragment>
