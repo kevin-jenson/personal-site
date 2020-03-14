@@ -10,11 +10,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Layout = ({ children }) => {
+const Layout = ({ children, backgroundColor = "" }) => {
   const classes = useStyles();
 
   return (
-    <div className={classes.appContainer}>
+    <div className={classes.appContainer} style={{ backgroundColor }}>
       <Header />
       <main>{children}</main>
       <Footer />
