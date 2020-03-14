@@ -37,22 +37,32 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const handleResize = (target, cursorRef) => () => {
+  const { top, right } = target.getBoundingClientRect();
+  cursorRef.current.style.top = `${top - 6}px`;
+  cursorRef.current.style.left = `${right + 5}px`;
+};
+
 const IndexPage = () => {
   const homeText = React.useRef(null);
   React.useEffect(() => {
-    homeText.current.childNodes.forEach(child => {
-      child.childNodes.forEach(child => (child.style.opacity = 1));
-    });
+    setTimeout(() => {
+      homeText.current.childNodes.forEach(child => {
+        child.childNodes.forEach(child => (child.style.opacity = 1));
+      });
+    }, 300);
+
+    return () => window.removeEventListener("resize", handleResize());
   });
 
   const classes = useStyles();
 
   const h1 = "Hey, My Name is Kevin Jenson.";
-  const line1 = `I'm a full stack software engineer and a UI/UX specialist`;
-  const line2 = `currently at CHG Healthcare.`;
-  const line3 = `Check out my blog posts or follow me on twitter.`;
-  const line4 = `Also feel free to shoot me a message @`;
-  const email = `kjjenson@gmail.com.`;
+  const line1 = "I'm a full stack software engineer and a UI/UX specialist";
+  const line2 = "currently at CHG Healthcare.";
+  const line3 = "Check out my blog posts or follow me on twitter.";
+  const line4 = "Also feel free to shoot me a message @";
+  const email = "kjjenson@gmail.com.";
 
   const lines = [h1, line1, line2, line3, line4, email];
 
@@ -85,6 +95,7 @@ const IndexPage = () => {
 
     if (isLast) {
       cursorRef.current.classList.add(classes.cursor);
+      window.addEventListener("resize", handleResize(target, cursorRef));
     }
   };
 

@@ -16,7 +16,6 @@ const useHeaderLinkStyles = makeStyles(({ transitions, ...theme }) => ({
     color: theme.colors.white,
     transition: transitions.create("opacity", {
       duration: transitions.duration.complex + transitions.duration.shortest,
-      easing: transitions.easing.standard,
       delay: transitions.duration.shorter,
     }),
     "&:hover": {
@@ -47,7 +46,6 @@ const useHeaderStyles = makeStyles(({ transitions, ...theme }) => ({
   hamMenu: {
     transition: transitions.create("transform", {
       duration: transitions.duration.shortest,
-      easing: transitions.easing.standard,
     }),
   },
   hamLine: {
@@ -55,18 +53,26 @@ const useHeaderStyles = makeStyles(({ transitions, ...theme }) => ({
     width: 50,
     height: 2,
     transition: transitions.create(["transform", "background-color"], {
-      duration: transitions.duration.shortest,
-      easing: transitions.easing.standard,
+      duration: transitions.duration.short,
     }),
     "&:nth-child(2)": {
       margin: [[theme.spacer * 2, 0]],
     },
+    animationName: "$hamFadeIn",
+    animationDuration: transitions.duration.shortest,
+    animationFillMode: "forwards",
+    opacity: 0,
+  },
+  "@keyframes hamFadeIn": {
+    "0%": { opacity: 0, backgroundColor: theme.colors.white },
+    "90%": { opacity: 0.5, backgroundColor: theme.colors.pink },
+    "100%": { opacity: 1, backgroundColor: theme.colors.white },
   },
   hamHovered: {
     transform: "rotate(90deg)",
   },
   hamLineHoverd: {
-    backgroundColor: theme.colors.pink,
+    backgroundColor: [theme.colors.pink, "!important"],
     "&:nth-child(2)": {
       transform: `translateY(${theme.spacer * 16.25}px)`,
     },
@@ -79,7 +85,6 @@ const useHeaderStyles = makeStyles(({ transitions, ...theme }) => ({
     transform: "translate(450px, 0px)",
     transition: transitions.create("transform", {
       duration: transitions.duration.enteringScreen,
-      easing: transitions.easing.standard,
     }),
   },
   headLinksHover: {
@@ -130,11 +135,21 @@ export const DesktopHeader = () => {
     <div className={classes.header}>
       <div
         ref={hamRef}
+        role="navigation"
         onMouseEnter={handleMouseEnter}
         className={classes.hamMenu}
       >
         {links.map((link, index) => {
-          return <div key={index} className={classes.hamLine} />;
+          return (
+            <div
+              key={index}
+              className={classes.hamLine}
+              style={{
+                animationDelay: `${theme.transitions.duration.standard *
+                  index}ms`,
+              }}
+            />
+          );
         })}
       </div>
       <div
@@ -146,6 +161,7 @@ export const DesktopHeader = () => {
       >
         <div
           ref={linksRef}
+          role="navigation"
           onMouseLeave={handleMouseLeave}
           className={classes.headerLinks}
         >
@@ -165,6 +181,13 @@ const useFooterStyles = makeStyles(theme => ({
     position: "absolute",
     bottom: 0,
     width: "100%",
+    animationName: "$footerSlideUp",
+    animationFillMode: "forwards",
+    animationDuration: theme.transitions.duration.enteringScreen,
+  },
+  "@keyframes footerSlideUp": {
+    from: { transform: `translateY(${theme.spacer * 8.5}px)` },
+    to: { transform: `translateY(0px)` },
   },
   iconContainer: {
     width: theme.spacer * 35.5,
@@ -196,6 +219,7 @@ export const Footer = () => {
               aria-label={icon}
               href={socialLinks[index]}
               target="_blank"
+              rel="noopener noreferrer"
             >
               <Icon />
             </a>

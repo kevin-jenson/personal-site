@@ -124,7 +124,7 @@ export const FormData = ({ Icon, text, addNextData }) => {
         }, i * 50 + 50);
       }
     };
-  }, [text, textRef.current]);
+  }, [text, addNextData]);
 
   const classes = useFormDataStyles();
 

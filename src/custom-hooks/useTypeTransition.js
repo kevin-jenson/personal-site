@@ -6,7 +6,6 @@ const useTypeTransition = (duration = 50) => {
   return index => ({
     transition: transitions.create("opacity", {
       duration,
-      easing: transitions.easing.standard,
       delay: index * 30,
     }),
     opacity: 0,

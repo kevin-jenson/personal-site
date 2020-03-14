@@ -2,7 +2,7 @@ import React from "react";
 import Layout from "../components/Layout";
 import SEO from "../components/Seo";
 
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles, useTheme } from "@material-ui/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
@@ -28,6 +28,22 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Contact = () => {
+  const { transitions } = useTheme();
+  const containerRef = React.useRef(null);
+  React.useEffect(() => {
+    for (let i = 0; i < containerRef.current.childNodes.length; i++) {
+      if (i === 3) continue;
+      const child = containerRef.current.childNodes[i];
+
+      child.style.transition = transitions.create(["opacity", "transform"], {
+        duration: transitions.duration.short,
+      });
+      setTimeout(() => {
+        child.style.opacity = 1;
+        child.style.transform = "scale(1)";
+      }, (i === 4 ? 3 : i) * transitions.duration.short);
+    }
+  });
   const classes = useStyles();
   const textFieldRef = React.useRef();
   const [{ label, Icon, value }, setCurrentInputProps] = React.useState({
@@ -114,19 +130,27 @@ const Contact = () => {
   const allFormStateFilled =
     Object.values(formState).filter(Boolean).length === 3;
 
+  const hiddenStyle = {
+    opacity: 0,
+    transformOrigin: "0px 0px 0px",
+    transform: "scale(0.75)",
+  };
+
   return (
     <Layout>
       <SEO title="Contact Me" />
-      <div className={classes.container}>
-        <Typography variant="h5" component="h1">
+      <div className={classes.container} ref={containerRef}>
+        <Typography variant="h5" component="h1" style={hiddenStyle}>
           Shoot me an Email!
         </Typography>
-        <Typography variant="body1" component="p">
+        <Typography variant="body1" component="p" style={hiddenStyle}>
           Let me know about any projects you wanna collaborate on, any
           opportunities you wanna talk to me about, or if you just wanna say
           whats up!
         </Typography>
-        <p>Fill out the form below or email me at kjjenson@gmail.com.</p>
+        <p style={hiddenStyle}>
+          Fill out the form below or email me at kjjenson@gmail.com.
+        </p>
         <div className={classes.formData}>
           {formData.map(({ Icon, text }) => {
             return (
@@ -139,7 +163,10 @@ const Contact = () => {
             );
           })}
         </div>
-        <form onSubmit={allFormStateFilled ? handleSend : handleNext}>
+        <form
+          onSubmit={allFormStateFilled ? handleSend : handleNext}
+          style={hiddenStyle}
+        >
           <Grid container spacing={0} alignItems="flex-end">
             <Grid item xs={1}>
               <Icon />
