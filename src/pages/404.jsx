@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles, useTheme } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/styles";
 import { Link } from "gatsby";
 
 import Layout from "../components/Layout";
@@ -18,7 +18,6 @@ const useStyles = makeStyles({
 });
 
 function NotFoundPage() {
-  const theme = useTheme();
   const classes = useStyles();
 
   return (
