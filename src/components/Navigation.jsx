@@ -1,11 +1,14 @@
 import React from "react";
-import { makeStyles, useTheme } from "@material-ui/styles";
+
+import clsx from "clsx";
 import { Link } from "gatsby";
+import { makeStyles, useTheme } from "@material-ui/styles";
+
 import { Twitter, LinkedIn, GitHub } from "./Icons";
 const Icons = { Twitter, LinkedIn, GitHub };
 
 const useHeaderLinkStyles = makeStyles(({ transitions, ...theme }) => ({
-  link: {
+  link: props => ({
     height: 50,
     width: theme.spacer * 18.25 + 2,
     opacity: 0,
@@ -13,7 +16,8 @@ const useHeaderLinkStyles = makeStyles(({ transitions, ...theme }) => ({
     lineHeight: "50px",
     fontSize: 24,
     textDecoration: "none",
-    color: theme.colors.white,
+    color:
+      props.colorMode === "light" ? theme.colors.black : theme.colors.white,
     transition: transitions.create("opacity", {
       duration: transitions.duration.complex + transitions.duration.shortest,
       delay: transitions.duration.shorter,
@@ -21,11 +25,11 @@ const useHeaderLinkStyles = makeStyles(({ transitions, ...theme }) => ({
     "&:hover": {
       textDecoration: "underline",
     },
-  },
+  }),
 }));
 
-function HeaderLink({ title }) {
-  const classes = useHeaderLinkStyles();
+function HeaderLink({ title, colorMode }) {
+  const classes = useHeaderLinkStyles({ colorMode });
 
   return (
     <Link to={`/${title !== "about" ? title : ""}`} className={classes.link}>
@@ -34,67 +38,89 @@ function HeaderLink({ title }) {
   );
 }
 
-const useHeaderStyles = makeStyles(({ transitions, ...theme }) => ({
-  header: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-end",
-    padding: [[theme.spacer * 8, theme.spacer * 6]],
-    overflow: "hidden",
-  },
-  hamMenu: {
-    transition: transitions.create("transform", {
-      duration: transitions.duration.shortest,
-    }),
-  },
-  hamLine: {
-    backgroundColor: theme.colors.white,
-    width: 50,
-    height: 2,
-    transition: transitions.create(["transform", "background-color"], {
-      duration: transitions.duration.short,
-    }),
-    "&:nth-child(2)": {
-      margin: [[theme.spacer * 2, 0]],
-    },
-    animationName: "$hamFadeIn",
-    animationDuration: transitions.duration.shortest,
-    animationFillMode: "forwards",
-    opacity: 0,
-  },
-  "@keyframes hamFadeIn": {
-    "0%": { opacity: 0, backgroundColor: theme.colors.white },
-    "90%": { opacity: 0.5, backgroundColor: theme.colors.pink },
-    "100%": { opacity: 1, backgroundColor: theme.colors.white },
-  },
-  hamHovered: {
-    transform: "rotate(90deg)",
-  },
-  hamLineHoverd: {
-    backgroundColor: [theme.colors.pink, "!important"],
-    "&:nth-child(2)": {
-      transform: `translateY(${theme.spacer * 16.25}px)`,
-    },
-    "&:nth-child(3)": {
-      transform: `translateY(${theme.spacer * 16.25 * 2}px)`,
-    },
-  },
-  headerLinks: {
-    display: "flex",
-    transform: "translate(450px, 0px)",
-    transition: transitions.create("transform", {
-      duration: transitions.duration.enteringScreen,
-    }),
-  },
-  headLinksHover: {
-    transform: "translate(0px, 0px)",
-  },
-}));
+const useHeaderStyles = makeStyles(({ transitions, ...theme }) => {
+  function colorModeColor(mode) {
+    if (mode === "light") {
+      return theme.colors.black;
+    }
 
-export function DesktopHeader() {
+    return theme.colors.white;
+  }
+
+  return {
+    header: {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "flex-end",
+      padding: [[theme.spacer * 8, theme.spacer * 6]],
+      overflow: "hidden",
+    },
+    hamMenu: {
+      transition: transitions.create("transform", {
+        duration: transitions.duration.shortest,
+      }),
+    },
+    hamLine: {
+      backgroundColor: props => colorModeColor(props.colorMode),
+      width: 50,
+      height: 2,
+      transition: transitions.create(["transform", "background-color"], {
+        duration: transitions.duration.short,
+      }),
+      "&:nth-child(2)": {
+        margin: [[theme.spacer * 2, 0]],
+      },
+      animationDuration: transitions.duration.shortest,
+      animationFillMode: "forwards",
+      opacity: 0,
+      "&$light": {
+        animationName: "$hamFadeInLight",
+      },
+      "&$dark": {
+        animationName: "$hamFadeInDark",
+      },
+    },
+    light: {},
+    dark: {},
+    "@keyframes hamFadeInLight": {
+      "0%": { opacity: 0, backgroundColor: theme.colors.black },
+      "90%": { opacity: 0.5, backgroundColor: theme.colors.pink },
+      "100%": { opacity: 1, backgroundColor: theme.colors.black },
+    },
+    "@keyframes hamFadeInDark": {
+      "0%": { opacity: 0, backgroundColor: theme.colors.white },
+      "90%": { opacity: 0.5, backgroundColor: theme.colors.pink },
+      "100%": { opacity: 1, backgroundColor: theme.colors.white },
+    },
+    hamHovered: {
+      transform: "rotate(90deg)",
+    },
+    hamLineHoverd: {
+      backgroundColor: [theme.colors.pink, "!important"],
+      "&:nth-child(2)": {
+        transform: `translateY(${theme.spacer * 16.25}px)`,
+      },
+      "&:nth-child(3)": {
+        transform: `translateY(${theme.spacer * 16.25 * 2}px)`,
+      },
+    },
+    headerLinks: {
+      display: "flex",
+      transform: "translate(450px, 0px)",
+      transition: transitions.create("transform", {
+        duration: transitions.duration.enteringScreen,
+      }),
+    },
+    headLinksHover: {
+      transform: "translate(0px, 0px)",
+    },
+  };
+});
+
+export function DesktopHeader({ colorMode }) {
   const theme = useTheme();
-  const classes = useHeaderStyles();
+  const classes = useHeaderStyles({ colorMode });
   const hamRef = React.useRef(null);
   const linksRef = React.useRef(null);
   const leaveTimeout = React.useRef(null);
@@ -131,6 +157,7 @@ export function DesktopHeader() {
     }, theme.transitions.duration.shortest);
   }
 
+  console.log("classes[colorMode]:", classes[colorMode]);
   return (
     <div className={classes.header}>
       <div
@@ -143,7 +170,7 @@ export function DesktopHeader() {
           return (
             <div
               key={index}
-              className={classes.hamLine}
+              className={clsx(classes.hamLine, classes[colorMode])}
               style={{
                 animationDelay: `${theme.transitions.duration.standard *
                   index}ms`,
@@ -166,7 +193,9 @@ export function DesktopHeader() {
           className={classes.headerLinks}
         >
           {links.map((link, index) => {
-            return <HeaderLink key={index} title={link} />;
+            return (
+              <HeaderLink key={index} title={link} colorMode={colorMode} />
+            );
           })}
         </div>
       </div>

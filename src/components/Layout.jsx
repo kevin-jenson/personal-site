@@ -3,19 +3,19 @@ import { makeStyles } from "@material-ui/styles";
 import { DesktopHeader as Header, Footer } from "./Navigation";
 
 const useStyles = makeStyles(theme => ({
-  appContainer: {
-    backgroundColor: theme.background,
+  appContainer: props => ({
+    backgroundColor: theme.background[props.colorMode],
     width: "100vw",
     height: "100vh",
-  },
+  }),
 }));
 
-function Layout({ children, backgroundColor = "" }) {
-  const classes = useStyles();
+function Layout({ children, colorMode = "dark" }) {
+  const classes = useStyles({ colorMode });
 
   return (
-    <div className={classes.appContainer} style={{ backgroundColor }}>
-      <Header />
+    <div className={classes.appContainer}>
+      <Header colorMode={colorMode} />
       <main>{children}</main>
       <Footer />
     </div>

@@ -15,7 +15,10 @@ const colors = {
 
 const theme = createMuiTheme({
   colors,
-  background: colors.black,
+  background: {
+    dark: colors.black,
+    light: colors.white,
+  },
   spacer: 8,
   typography: {
     h1: {
