@@ -157,7 +157,6 @@ export function DesktopHeader({ colorMode }) {
     }, theme.transitions.duration.shortest);
   }
 
-  console.log("classes[colorMode]:", classes[colorMode]);
   return (
     <div className={classes.header}>
       <div

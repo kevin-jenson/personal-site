@@ -87,6 +87,10 @@ function IndexPage() {
 
   const cursorRef = React.useRef(null);
   function handleCursorPosition({ target }) {
+    if (cursorRef.current.style.visibility === "hidden") {
+      cursorRef.current.style.visibility = "visible";
+    }
+
     const isLast =
       target.textContent === "." &&
       target.previousElementSibling.textContent === "m";
@@ -129,7 +133,7 @@ function IndexPage() {
           }
         })}
       </div>
-      <Cursor ref={cursorRef} />
+      <Cursor style={{ visibility: "hidden" }} ref={cursorRef} />
     </Layout>
   );
 }
