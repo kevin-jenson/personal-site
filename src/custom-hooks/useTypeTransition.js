@@ -1,6 +1,6 @@
 import { useTheme } from "@material-ui/styles";
 
-const useTypeTransition = (duration = 50) => {
+function useTypeTransition(duration = 50) {
   const { transitions } = useTheme();
 
   return index => ({
@@ -10,6 +10,6 @@ const useTypeTransition = (duration = 50) => {
     }),
     opacity: 0,
   });
-};
+}
 
 export default useTypeTransition;

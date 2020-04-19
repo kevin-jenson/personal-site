@@ -24,7 +24,7 @@ const useHeaderLinkStyles = makeStyles(({ transitions, ...theme }) => ({
   },
 }));
 
-const HeaderLink = ({ title }) => {
+function HeaderLink({ title }) {
   const classes = useHeaderLinkStyles();
 
   return (
@@ -32,7 +32,7 @@ const HeaderLink = ({ title }) => {
       {title}
     </Link>
   );
-};
+}
 
 const useHeaderStyles = makeStyles(({ transitions, ...theme }) => ({
   header: {
@@ -92,7 +92,7 @@ const useHeaderStyles = makeStyles(({ transitions, ...theme }) => ({
   },
 }));
 
-export const DesktopHeader = () => {
+export function DesktopHeader() {
   const theme = useTheme();
   const classes = useHeaderStyles();
   const hamRef = React.useRef(null);
@@ -101,7 +101,7 @@ export const DesktopHeader = () => {
   const enterTimeout = React.useRef(null);
   const links = ["about", "blog", "contact"];
 
-  const handleMouseEnter = () => {
+  function handleMouseEnter() {
     if (leaveTimeout.current) clearTimeout(leaveTimeout.current);
 
     hamRef.current.classList.add(classes.hamHovered);
@@ -116,9 +116,9 @@ export const DesktopHeader = () => {
         child.style.opacity = 1;
       });
     }, theme.transitions.duration.shortest);
-  };
+  }
 
-  const handleMouseLeave = () => {
+  function handleMouseLeave() {
     if (enterTimeout.current) clearTimeout(enterTimeout.current);
     hamRef.current.childNodes.forEach(child =>
       child.classList.remove(classes.hamLineHoverd)
@@ -129,7 +129,7 @@ export const DesktopHeader = () => {
     leaveTimeout.current = setTimeout(() => {
       hamRef.current.classList.remove(classes.hamHovered);
     }, theme.transitions.duration.shortest);
-  };
+  }
 
   return (
     <div className={classes.header}>
@@ -172,7 +172,7 @@ export const DesktopHeader = () => {
       </div>
     </div>
   );
-};
+}
 
 const useFooterStyles = makeStyles(theme => ({
   footer: {
@@ -199,7 +199,7 @@ const useFooterStyles = makeStyles(theme => ({
   },
 }));
 
-export const Footer = () => {
+export function Footer() {
   const classes = useFooterStyles();
   const socialLinks = [
     "https://twitter.com/kevinjenson_",
@@ -228,4 +228,4 @@ export const Footer = () => {
       </div>
     </footer>
   );
-};
+}

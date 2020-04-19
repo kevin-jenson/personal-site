@@ -37,13 +37,15 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const handleResize = (target, cursorRef) => () => {
-  const { top, right } = target.getBoundingClientRect();
-  cursorRef.current.style.top = `${top - 6}px`;
-  cursorRef.current.style.left = `${right + 5}px`;
-};
+function handleResize(target, cursorRef) {
+  return function() {
+    const { top, right } = target.getBoundingClientRect();
+    cursorRef.current.style.top = `${top - 6}px`;
+    cursorRef.current.style.left = `${right + 5}px`;
+  };
+}
 
-const IndexPage = () => {
+function IndexPage() {
   const homeText = React.useRef(null);
   React.useEffect(() => {
     setTimeout(() => {
@@ -68,7 +70,7 @@ const IndexPage = () => {
 
   const typeTransition = useTypeTransition();
 
-  const splitMap = (text, addition, variant = "h5") => {
+  function splitMap(text, addition, variant = "h5") {
     return text.split("").map((char, index) => {
       return (
         <Typography
@@ -81,10 +83,10 @@ const IndexPage = () => {
         </Typography>
       );
     });
-  };
+  }
 
   const cursorRef = React.useRef(null);
-  const handleCursorPosition = ({ target }) => {
+  function handleCursorPosition({ target }) {
     const isLast =
       target.textContent === "." &&
       target.previousElementSibling.textContent === "m";
@@ -97,7 +99,7 @@ const IndexPage = () => {
       cursorRef.current.classList.add(classes.cursor);
       window.addEventListener("resize", handleResize(target, cursorRef));
     }
-  };
+  }
 
   return (
     <Layout>
@@ -130,6 +132,6 @@ const IndexPage = () => {
       <Cursor ref={cursorRef} />
     </Layout>
   );
-};
+}
 
 export default IndexPage;

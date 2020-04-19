@@ -17,7 +17,7 @@ const useStyles = makeStyles({
   },
 });
 
-const NotFoundPage = () => {
+function NotFoundPage() {
   const classes = useStyles();
 
   return (
@@ -32,6 +32,6 @@ const NotFoundPage = () => {
       </div>
     </Layout>
   );
-};
+}
 
 export default NotFoundPage;

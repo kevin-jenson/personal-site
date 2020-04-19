@@ -1,9 +1,13 @@
 import React from "react";
+import clsx from "clsx";
 
 import MuiTextField from "@material-ui/core/TextField";
 import MuiButton from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/styles";
+
+import { BabyYoda } from "./Icons";
 
 const useTextFieldStyles = makeStyles(theme => ({
   underlineOverride: {
@@ -75,7 +79,7 @@ const useButtonStyles = makeStyles(theme => ({
   },
 }));
 
-export const Button = ({ children, ...props }) => {
+export function Button({ children, ...props }) {
   const classes = useButtonStyles();
 
   return (
@@ -90,7 +94,7 @@ export const Button = ({ children, ...props }) => {
       {children}
     </MuiButton>
   );
-};
+}
 
 const useFormDataStyles = makeStyles(theme => ({
   container: {
@@ -104,7 +108,7 @@ const useFormDataStyles = makeStyles(theme => ({
   },
 }));
 
-export const FormData = ({ Icon, text, addNextData }) => {
+export function FormData({ Icon, text, addNextData }) {
   const textRef = React.useRef(null);
   React.useEffect(() => {
     const [_, ...transitionText] = [...textRef.current.children];
@@ -144,4 +148,35 @@ export const FormData = ({ Icon, text, addNextData }) => {
       </React.Fragment>
     </span>
   );
-};
+}
+
+const useLoaderStyles = makeStyles(theme => ({
+  loadingContainer: ({ size }) => ({
+    display: "flex",
+    justifyContent: "center",
+    top: `calc(50% - ${size / 2}px)`,
+    right: "50%",
+  }),
+  posAbs: {
+    position: "absolute",
+  },
+  circularProgressOverride: {
+    color: theme.colors.babyYoda.green,
+  },
+}));
+
+export function Loader({ size }) {
+  const classes = useLoaderStyles({ size });
+
+  return (
+    <div className={clsx(classes.loadingContainer, classes.posAbs)}>
+      <CircularProgress
+        size={size}
+        classes={{ colorPrimary: classes.circularProgressOverride }}
+        className={classes.posAbs}
+        thickness={2}
+      />
+      <BabyYoda size={size} className={classes.posAbs} />
+    </div>
+  );
+}

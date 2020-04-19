@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Layout = ({ children, backgroundColor = "" }) => {
+function Layout({ children, backgroundColor = "" }) {
   const classes = useStyles();
 
   return (
@@ -20,6 +20,6 @@ const Layout = ({ children, backgroundColor = "" }) => {
       <Footer />
     </div>
   );
-};
+}
 
 export default Layout;

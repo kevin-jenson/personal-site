@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ThemeProvider = ({ children }) => {
+function ThemeProvider({ children }) {
   useStyles();
 
   return (
@@ -23,6 +23,6 @@ const ThemeProvider = ({ children }) => {
       <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
     </>
   );
-};
+}
 
 export default ThemeProvider;

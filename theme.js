@@ -6,6 +6,11 @@ const colors = {
   gray: "#40434E",
   lightPink: "#A39BA8",
   pink: "#C297B8",
+  babyYoda: {
+    green: "#B1CDAF",
+    brown: "#9B8B7B",
+    lightBrown: "#CECAAC",
+  },
 };
 
 const theme = createMuiTheme({
