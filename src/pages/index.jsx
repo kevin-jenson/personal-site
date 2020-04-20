@@ -20,6 +20,12 @@ const useStyles = makeStyles(theme => ({
     position: "absolute",
     top: `calc(50% - ${(theme.spacer * 35) / 2}px)`,
     left: `calc(50% - ${(theme.spacer * 81.75) / 2}px)`,
+    [theme.breakpoints.down("md")]: {
+      width: "80vw",
+      height: "80vh",
+      top: "10vh",
+      left: "10vw",
+    },
   },
   centerText: {
     textAlign: "center",

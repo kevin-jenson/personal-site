@@ -16,6 +16,12 @@ const useStyles = makeStyles(theme => ({
     width: theme.spacer * 61,
     margin: "auto",
     marginTop: theme.spacer * 10,
+    [theme.breakpoints.down("md")]: {
+      width: "80vw",
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginTop: 0,
+    },
   },
   buttonContainer: {
     marginTop: theme.spacer * 4,

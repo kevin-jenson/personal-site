@@ -1,6 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/styles";
-import { DesktopHeader as Header, Footer } from "./Navigation";
+import { Header, Footer } from "./Navigation";
 
 const useStyles = makeStyles(theme => ({
   appContainer: props => ({
