@@ -23,8 +23,8 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down("md")]: {
       width: "80vw",
       height: "80vh",
-      top: "10vh",
-      left: "10vw",
+      top: "10%",
+      left: "10%",
     },
   },
   centerText: {

@@ -31,11 +31,19 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
+    [theme.breakpoints.down("xs")]: {
+      height: theme.spacer * 18,
+      alignItems: "flex-start",
+      flexDirection: "column",
+    },
   },
   submitState: {
     color: theme.colors.white,
     textAlign: "center",
     margin: "20%",
+    [theme.breakpoints.down("xs")]: {
+      margin: "10%",
+    },
   },
 }));
 
@@ -231,7 +239,7 @@ function Contact() {
               justify="flex-start"
               className={classes.buttonContainer}
             >
-              <Grid item xs={2}>
+              <Grid item xs={3} sm={2}>
                 <Button
                   disabled={!Boolean(formState[value]) || allFormStateFilled}
                   onClick={handleNext}
@@ -240,7 +248,7 @@ function Contact() {
                   Next
                 </Button>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item xs={3} sm={2}>
                 <Button
                   disabled={!allFormStateFilled}
                   onClick={handleSend}

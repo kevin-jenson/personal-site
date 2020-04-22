@@ -23,6 +23,9 @@ export function Header(props) {
 
 const useHamMenuStyles = makeStyles(({ transitions, ...theme }) => {
   return {
+    hamMenu: {
+      zIndex: theme.zIndex.appBar,
+    },
     hamLine: {
       backgroundColor: props =>
         props.colorMode === "light" ? theme.colors.black : theme.colors.white,
@@ -73,7 +76,7 @@ const HamMenu = React.forwardRef(
         role="navigation"
         onClick={onClick}
         onMouseEnter={onHover}
-        className={className}
+        className={clsx(classes.hamMenu, className)}
       >
         {links.map((link, index) => {
           return (
@@ -246,8 +249,11 @@ const useDrawerStyles = makeStyles(theme => ({
     backgroundColor: theme.colors.gray,
     zIndex: theme.zIndex.drawer,
     width: theme.spacer * 25,
-    animationName: "$drawerClose",
     animationFillMode: "forwards",
+  },
+  close: {
+    opacity: 0,
+    animationName: "$drawerClose",
     animationDuration: theme.transitions.duration.complex,
   },
   "@keyframes drawerClose": {
@@ -292,10 +298,17 @@ const useDrawerStyles = makeStyles(theme => ({
 function Drawer({ isOpen, links, onClose }) {
   const theme = useTheme();
   const classes = useDrawerStyles();
+  const open = isOpen === "OPEN";
+  console.log("open:", open);
+  const closed = isOpen === "CLOSED";
+  console.log("closed:", closed);
 
   return (
     <Paper
-      className={clsx(classes.drawer, { [classes.open]: isOpen })}
+      className={clsx(classes.drawer, {
+        [classes.open]: open,
+        [classes.closed]: closed,
+      })}
       elevation={3}
     >
       <div className={classes.links}>
@@ -334,16 +347,16 @@ const useMobileHeaderStyles = makeStyles(theme => ({
 
 export function MobileHeader({ colorMode }) {
   const classes = useMobileHeaderStyles();
-  const [isDrawerOpen, setDrawerOpen] = React.useState(false);
+  const [isDrawerOpen, setDrawerOpen] = React.useState(null);
 
   function handleDrawerOpen() {
     console.log("handleDrawerOpen");
-    setDrawerOpen(true);
+    setDrawerOpen("OPEN");
   }
 
   function handleDrawerClose() {
     console.log("handleDrawerClose");
-    setDrawerOpen(false);
+    setDrawerOpen("CLOSED");
   }
 
   return (

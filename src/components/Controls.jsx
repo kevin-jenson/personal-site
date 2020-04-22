@@ -100,6 +100,10 @@ const useFormDataStyles = makeStyles(theme => ({
   container: {
     marginRight: theme.spacer * 2,
     display: "flex",
+    [theme.breakpoints.down("xs")]: {
+      marginRight: 0,
+      marginBottom: theme.spacer * 2,
+    },
     "&>svg": {
       margin: [[0, theme.spacer, theme.spacer / 2, 0]],
       display: "inline-flex",
