@@ -120,7 +120,7 @@ export function FormData({ Icon, text, addNextData }) {
       setTimeout(() => {
         transitionText[i].style.display = "inline-block";
         if (i === transitionText.length - 1) {
-          setTimeout(addNextData, 350);
+          setTimeout(addNextData, 500);
         }
       }, i * 50 + 50);
     }

@@ -299,9 +299,7 @@ function Drawer({ isOpen, links, onClose }) {
   const theme = useTheme();
   const classes = useDrawerStyles();
   const open = isOpen === "OPEN";
-  console.log("open:", open);
   const closed = isOpen === "CLOSED";
-  console.log("closed:", closed);
 
   return (
     <Paper
@@ -315,7 +313,7 @@ function Drawer({ isOpen, links, onClose }) {
         <Close size={50} color={theme.colors.white} onClick={onClose} />
         {links.map(link => {
           return (
-            <>
+            <React.Fragment key={link}>
               <Typography
                 key={link}
                 component={Link}
@@ -326,7 +324,7 @@ function Drawer({ isOpen, links, onClose }) {
                 {link}
               </Typography>
               <div className={classes.divider} />
-            </>
+            </React.Fragment>
           );
         })}
       </div>

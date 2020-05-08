@@ -9,6 +9,7 @@ import emailJs from "emailjs-com";
 
 import { TextField, Button, FormData, Loader } from "../components/Controls";
 import { Mail, Pencil, Profile } from "../components/Icons";
+import useEventHandler from "../custom-hooks/useEventHandler";
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -48,7 +49,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Contact() {
-  const { transitions } = useTheme();
   const containerRef = React.useRef(null);
   React.useEffect(() => {
     if (containerRef.current) {
@@ -68,18 +68,8 @@ function Contact() {
   });
 
   const classes = useStyles();
+  const { transitions } = useTheme();
   const textFieldRef = React.useRef();
-  const [{ label, Icon, value }, setCurrentInputProps] = React.useState({
-    label: "What's your name?",
-    Icon: Profile,
-    value: "name",
-  });
-
-  const [formState, setFormState] = React.useState({
-    name: "",
-    email: "",
-    message: "",
-  });
 
   const SHOW_STATES = {
     showForm: "SHOW_FORM",
@@ -89,97 +79,108 @@ function Contact() {
   };
   const [showState, setShowState] = React.useState(SHOW_STATES.showForm);
 
-  const [formData, setFormData] = React.useReducer((state, action) => {
-    switch (action.type) {
-      case "ADD_FORM_DATA":
-        if (state.find(({ text }) => text === label)) return state;
-        return [...state, { Icon, text: label }];
-      case "UPDATE_NAME":
-        return Object.assign([], state, {
-          0: { Icon: state[0].Icon, text: formState.name },
-        });
-      case "UPDATE_EMAIL":
-        return Object.assign([], state, {
-          1: { Icon: state[1].Icon, text: formState.email },
-        });
-      case "CLEAR_DATA":
-        return [];
-      default:
-        throw new Error(
-          `type: ${action.type} not found for setFormData reducer`
-        );
-    }
-  }, []);
+  const events = {
+    focus: handleFocus,
+    input: handleInput,
+    next: handleNext,
+    submit: handleSubmit,
+  };
+  const initialState = {
+    data: [],
+    form: { name: "", email: "", message: "" },
+    Icon: Profile,
+    label: "What's your name?",
+    value: "name",
+  };
 
-  function handleFocus() {
-    setFormData({ type: "ADD_FORM_DATA" });
+  const [state, dispatchEvent] = useEventHandler(events, initialState);
+  const { form, data, value, Icon, label } = state;
+
+  function handleFocus(state) {
+    const { data, label, Icon } = state;
+    if (data.find(({ text }) => text === label)) return state;
+    return {
+      ...state,
+      data: [...data, { Icon: Icon, text: label }],
+    };
   }
 
-  function handleOnInput({ target }) {
-    setFormState({ ...formState, [value]: target.value });
+  function handleInput(state, payload) {
+    const { form, value } = state;
+
+    return { ...state, form: { ...form, [value]: payload } };
   }
 
-  function handleNext(event) {
-    event.preventDefault();
-
-    switch (value) {
-      case "name":
-        setFormData({ type: "UPDATE_NAME" });
-        setCurrentInputProps({
-          label: "What's your email?",
-          Icon: Mail,
-          value: "email",
-        });
-        break;
-      case "email":
-        setFormData({ type: "UPDATE_EMAIL" });
-        setCurrentInputProps({
-          label: "Write me a message.",
-          Icon: Pencil,
-          value: "message",
-        });
-        break;
-      case "message":
-        break;
-      default:
-        throw new Error(`case not found: ${value}`);
+  function handleNext(state) {
+    const { value, data, form } = state;
+    if (value === "name") {
+      return {
+        ...state,
+        label: "What's your email?",
+        Icon: Mail,
+        value: "email",
+        data: Object.assign([], data, {
+          0: { Icon: Profile, text: form.name },
+        }),
+      };
+    } else if (value === "email") {
+      return {
+        ...state,
+        label: "Write me a message.",
+        Icon: Pencil,
+        value: "message",
+        data: Object.assign([], data, { 1: { Icon: Mail, text: form.email } }),
+      };
     }
 
     textFieldRef.current.focus();
   }
 
-  async function handleSend(event) {
-    event.preventDefault();
-    const { name, email, message } = formState;
+  function handleSubmit(state) {
+    const { form } = state;
+    const SHOW_STATES = {
+      showForm: "SHOW_FORM",
+      isLoading: "IS_LOADING",
+      success: "SUCCESS",
+      error: "ERROR",
+    };
 
     setShowState(SHOW_STATES.isLoading);
 
-    const emailResult = await emailJs.send(
-      "gmail",
-      "kevinjenson_dev",
-      {
-        user_name: name,
-        user_email: email,
-        user_message: message,
+    emailJs
+      .send(
+        "gmail",
+        "kevinjenson_dev",
+        {
+          user_name: form.name,
+          user_email: form.email,
+          user_message: form.message,
+        },
+        "user_wnpTxm02i1e3j9vHjJSaL"
+      )
+      .then(({ status }) => {
+        if (status === 200) {
+          setShowState(SHOW_STATES.success);
+        } else {
+          setShowState(SHOW_STATES.error);
+        }
+      })
+      .catch(() => {
+        setShowState(SHOW_STATES.error);
+      });
+
+    return {
+      ...state,
+      form: {
+        name: "",
+        email: "",
+        message: "",
       },
-      "user_wnpTxm02i1e3j9vHjJSaL"
-    );
-
-    setShowState(
-      emailResult.status === 200 ? SHOW_STATES.success : SHOW_STATES.error
-    );
-
-    setFormState({
-      name: "",
-      email: "",
-      message: "",
-    });
-
-    setFormData({ type: "CLEAR_DATA" });
+      data: [],
+    };
   }
 
-  const allFormStateFilled =
-    Object.values(formState).filter(Boolean).length === 3;
+  const allFormStateFilled = Object.values(form).filter(Boolean).length === 3;
 
   const hiddenStyle = {
     opacity: 0,
@@ -204,19 +205,23 @@ function Contact() {
             Fill out the form below or email me at kjjenson@gmail.com.
           </p>
           <div className={classes.formData}>
-            {formData.map(({ Icon, text }) => {
+            {data.map(({ Icon, text }) => {
               return (
                 <FormData
                   key={text}
                   Icon={Icon}
                   text={text}
-                  addNextData={() => setFormData({ type: "ADD_FORM_DATA" })}
+                  addNextData={function() {
+                    dispatchEvent("FOCUS");
+                  }}
                 />
               );
             })}
           </div>
           <form
-            onSubmit={allFormStateFilled ? handleSend : handleNext}
+            onSubmit={e =>
+              dispatchEvent(allFormStateFilled ? "SUBMIT" : "NEXT").prevent(e)
+            }
             style={hiddenStyle}
           >
             <Grid container spacing={0} alignItems="flex-end">
@@ -226,9 +231,14 @@ function Contact() {
               <Grid item xs={11}>
                 <TextField
                   label={label}
-                  onInput={handleOnInput}
-                  value={formState[value]}
-                  onFocus={handleFocus}
+                  onInput={e =>
+                    dispatchEvent({
+                      event: "INPUT",
+                      payload: e.target.value,
+                    }).prevent(e)
+                  }
+                  value={form[value]}
+                  onFocus={() => dispatchEvent("FOCUS")}
                   ref={textFieldRef}
                 />
               </Grid>
@@ -241,8 +251,8 @@ function Contact() {
             >
               <Grid item xs={3} sm={2}>
                 <Button
-                  disabled={!Boolean(formState[value]) || allFormStateFilled}
-                  onClick={handleNext}
+                  disabled={!Boolean(form[value]) || allFormStateFilled}
+                  onClick={e => dispatchEvent("NEXT").prevent(e)}
                   type={allFormStateFilled ? "button" : "submit"}
                 >
                   Next
@@ -251,7 +261,7 @@ function Contact() {
               <Grid item xs={3} sm={2}>
                 <Button
                   disabled={!allFormStateFilled}
-                  onClick={handleSend}
+                  onClick={e => dispatchEvent("SUBMIT").prevent(e)}
                   type={allFormStateFilled ? "submit" : "button"}
                 >
                   Send
