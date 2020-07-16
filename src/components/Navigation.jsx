@@ -393,7 +393,7 @@ const useFooterStyles = makeStyles(theme => ({
 export function Footer() {
   const classes = useFooterStyles();
   const socialLinks = [
-    "https://twitter.com/kevinjenson_",
+    "https://twitter.com/_devkev",
     "https://www.linkedin.com/in/kevin-jenson/",
     "https://github.com/kevin-jenson",
   ];
