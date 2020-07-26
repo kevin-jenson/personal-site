@@ -1,0 +1,18 @@
+:root {
+  --light-text: #eef4ed;
+  --dark-text: #bcc1bb;
+  --gray: #383e3e;
+  --black: #121818;
+}
+
+.title-text {
+  font-size: 64px;
+}
+
+.welcome-text {
+  color: var(--dark-text);
+}
+
+.welcome-bg {
+  background-color: var(--gray);
+}
